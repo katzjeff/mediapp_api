@@ -37,7 +37,7 @@ const PatientType = new GraphQLObjectType({
     gender: { type: GraphQLString },
     phone: { type: GraphQLString },
     status: { type: GraphQLString },
-    // drName: { type: GraphQLString },
+    drName: { type: GraphQLString },
     diagnosis: { type: GraphQLString },
     disease: {
       type: DiseaseType,
