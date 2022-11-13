@@ -17,6 +17,12 @@ const DoctorType = new GraphQLObjectType({
     email: { type: GraphQLString },
     profession: { type: GraphQLString },
     phone: { type: GraphQLString },
+    patient: {
+      type: PatientType,
+      resolve(parent, args) {
+        return patients.find((patient) => patient.id === parent.patientId);
+      }
+    }
   }),
 });
 
@@ -31,8 +37,20 @@ const PatientType = new GraphQLObjectType({
     gender: { type: GraphQLString },
     phone: { type: GraphQLString },
     status: { type: GraphQLString },
-    drName: { type: GraphQLString },
+    // drName: { type: GraphQLString },
     diagnosis: { type: GraphQLString },
+    disease: {
+      type: DiseaseType,
+      resolve(parent, args) {
+        return diseases.find((disease) => disease.id === parent.diseaseId);
+      }
+    },
+    doctor: {
+      type: DoctorType,
+      resolve(parent, args) {
+        return doctors.find((doctor) => doctor.id === parent.doctorId);
+      }
+    }
   }),
 });
 
