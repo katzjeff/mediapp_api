@@ -1,4 +1,9 @@
 const { doctors, patients, diseases } = require("../data.js");
+//Models
+const Patient = require("../models/Patients");
+const Disease = require("../models/Diseases");
+const Doctor = require("../models/Doctors");
+
 const {
   GraphQLObjectType,
   GraphQLString,
@@ -20,7 +25,7 @@ const DoctorType = new GraphQLObjectType({
     patient: {
       type: PatientType,
       resolve(parent, args) {
-        return patients.find((patient) => patient.id === parent.patientId);
+        return Patient.findById(parent.patientID);
       }
     }
   }),
@@ -42,13 +47,13 @@ const PatientType = new GraphQLObjectType({
     disease: {
       type: DiseaseType,
       resolve(parent, args) {
-        return diseases.find((disease) => disease.id === parent.diseaseId);
+        return Disease.findById(parent.diseaseID);
       }
     },
     doctor: {
       type: DoctorType,
       resolve(parent, args) {
-        return doctors.find((doctor) => doctor.id === parent.doctorId);
+        return Doctor.findById(parent.doctorID);
       }
     }
   }),
@@ -74,7 +79,7 @@ const RootQuery = new GraphQLObjectType({
     doctors: {
       type: new GraphQLList(DoctorType),
       resolve(parent, args) {
-        return doctors;
+       return Doctor.find({});
       },
     },
     //used to return individual Doctor
@@ -82,7 +87,7 @@ const RootQuery = new GraphQLObjectType({
       type: DoctorType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return doctors.find((doctor) => doctor.id === args.id);
+        return Doctor.findById(args.id);
       },
     },
 
@@ -91,7 +96,7 @@ const RootQuery = new GraphQLObjectType({
     patients: {
       type: new GraphQLList(PatientType),
       resolve(parent, args) {
-        return patients;
+        return Patient.find({});
       },
     },
     //used to return individual patient
@@ -99,7 +104,7 @@ const RootQuery = new GraphQLObjectType({
       type: PatientType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return patients.find((patient) => patient.id === args.id);
+        return Patient.findById(args.id);
       },
     },
 
@@ -108,7 +113,7 @@ const RootQuery = new GraphQLObjectType({
     diseases: {
       type: new GraphQLList(DiseaseType),
       resolve(parent, args) {
-        return diseases;
+        return Disease.find({});
       },
     },
     //used to return individual diseases details
@@ -116,7 +121,7 @@ const RootQuery = new GraphQLObjectType({
       type: DiseaseType,
       args: { id: { type: GraphQLID } },
       resolve(parent, args) {
-        return diseases.find((disease) => disease.id === args.id);
+        return Disease.findById(args.id);
       },
     },
   },

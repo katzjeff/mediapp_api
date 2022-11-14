@@ -3,8 +3,13 @@ require("dotenv").config();
 const schema = require("./schema/schema");
 const { graphqlHTTP } = require("express-graphql");
 const port = process.env.PORT || 5000;
+const colors = require("colors");
+const connectDB = require("./config/db");
 
 const app = express();
+
+// Connect Database
+connectDB();
 
 app.use(
   "/mediapp",
