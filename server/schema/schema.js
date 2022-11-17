@@ -188,9 +188,8 @@ const Mutation = new GraphQLObjectType({
       resolve(parent, args) {
         return Doctor.findByIdAndRemove(args.id);
       },
-    }, 
-    
-    
+    },
+
     //Patient Mutations
     addPatient: {
       //used to add a new patient
@@ -214,7 +213,7 @@ const Mutation = new GraphQLObjectType({
               other: { value: "Other" },
             },
           }),
-          defaultValue: 'Pending Review',
+          defaultValue: "Pending Review",
         },
         doctorID: { type: GraphQLNonNull(GraphQLID) },
         diseaseID: { type: GraphQLNonNull(GraphQLID) },
@@ -242,14 +241,27 @@ const Mutation = new GraphQLObjectType({
       type: PatientType,
       args: {
         id: { type: GraphQLNonNull(GraphQLID) },
-        patientName: { type: GraphQLNonNull(GraphQLString) },
-        age: { type: GraphQLNonNull(GraphQLInt) },
-        email: { type: GraphQLNonNull(GraphQLString) },
-        gender: { type: GraphQLNonNull(GraphQLString) },
-        phone: { type: GraphQLNonNull(GraphQLString) },
-        status: { type: GraphQLNonNull(GraphQLString) },
-        drName: { type: GraphQLNonNull(GraphQLString) },
-        diagnosis: { type: GraphQLNonNull(GraphQLString) },
+        patientName: { type: GraphQLString },
+        age: { type: GraphQLInt },
+        email: { type: GraphQLString },
+        gender: { type: GraphQLString },
+        phone: { type: GraphQLString },
+        status: {
+          type: new GraphQLEnumType({
+            name: "StatusUpdate",
+            values: {
+              admitted: { value: "Admitted" },
+              discharged: { value: "Discharged" },
+              consultation: { value: "Consultation" },
+              emergency: { value: "Emergency" },
+              followup: { value: "Follow Up" },
+              transfer: { value: "Transfer" },
+              other: { value: "Other" },
+            },
+          }),
+        },
+        drName: { type: GraphQLString },
+        diagnosis: { type: GraphQLString },
       },
       resolve(parent, args) {
         return Patient.findByIdAndUpdate(
