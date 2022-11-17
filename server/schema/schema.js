@@ -46,16 +46,16 @@ const PatientType = new GraphQLObjectType({
     status: { type: GraphQLString },
     drName: { type: GraphQLString },
     diagnosis: { type: GraphQLString },
-    disease: {
-      type: DiseaseType,
-      resolve(parent, args) {
-        return Disease.findById(parent.diseaseID);
-      },
-    },
     doctor: {
       type: DoctorType,
       resolve(parent, args) {
         return Doctor.findById(parent.doctorID);
+      },
+    },
+    disease: {
+      type: DiseaseType,
+      resolve(parent, args) {
+        return Disease.findById(parent.diseaseID);
       },
     },
   }),
@@ -69,6 +69,7 @@ const DiseaseType = new GraphQLObjectType({
     diseaseName: { type: GraphQLString },
     symptoms: { type: GraphQLString },
     treatment: { type: GraphQLString },
+    // diseaseID: { type: GraphQLID },
   }),
 });
 
@@ -77,11 +78,11 @@ const RootQuery = new GraphQLObjectType({
   name: "RootQueryType",
   fields: {
     //Doctors search methods
-    //used to return a list of Doctors
+    //used to return a list of All Doctors
     doctors: {
       type: new GraphQLList(DoctorType),
       resolve(parent, args) {
-        return Doctor.find({});
+        return Doctor.find();
       },
     },
     //used to return individual Doctor
@@ -98,7 +99,7 @@ const RootQuery = new GraphQLObjectType({
     patients: {
       type: new GraphQLList(PatientType),
       resolve(parent, args) {
-        return Patient.find({});
+        return Patient.find();
       },
     },
     //used to return individual patient
@@ -133,6 +134,7 @@ const RootQuery = new GraphQLObjectType({
 
 const Mutation = new GraphQLObjectType({
   name: "Mutation",
+  description: "Functions to alter data, that is add, update and delete",
   fields: {
     //Doctor Mutations
     addDoctor: {
@@ -184,9 +186,11 @@ const Mutation = new GraphQLObjectType({
       type: DoctorType,
       args: { id: { type: GraphQLNonNull(GraphQLID) } },
       resolve(parent, args) {
-        return Doctor.findByIdAndDelete(args.id);
+        return Doctor.findByIdAndRemove(args.id);
       },
-    },
+    }, 
+    
+    
     //Patient Mutations
     addPatient: {
       //used to add a new patient
@@ -205,11 +209,12 @@ const Mutation = new GraphQLObjectType({
               discharged: { value: "Discharged" },
               consultation: { value: "Consultation" },
               emergency: { value: "Emergency" },
-              followup: { value: "FollowUp" },
+              followup: { value: "Follow Up" },
               transfer: { value: "Transfer" },
               other: { value: "Other" },
             },
           }),
+          defaultValue: 'Pending Review',
         },
         doctorID: { type: GraphQLNonNull(GraphQLID) },
         diseaseID: { type: GraphQLNonNull(GraphQLID) },
@@ -224,6 +229,8 @@ const Mutation = new GraphQLObjectType({
           gender: args.gender,
           phone: args.phone,
           status: args.status,
+          doctorID: args.doctorID,
+          diseaseID: args.diseaseID,
           drName: args.drName,
           diagnosis: args.diagnosis,
         });
