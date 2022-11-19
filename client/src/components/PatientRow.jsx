@@ -1,10 +1,22 @@
 import { FaTrash } from "react-icons/fa";
 import { useMutation } from "@apollo/client";
 import { DELETE_PATIENT } from "../mutations/PatientsMutation";
+import { GET_PATIENTS } from "../queries/PatientsQueries";
 
 export default function PatientRow({ patient }) {
   const [deletePatient] = useMutation(DELETE_PATIENT, {
     variables: { id: patient.id },
+    update(cache, { data: { deletePatient } }) {
+      const { patients } = cache.readQuery({ query: GET_PATIENTS });
+      cache.writeQuery({
+        query: GET_PATIENTS,
+        data: {
+          patients: patients.filter(
+            (patient) => patient.id !== deletePatient.id
+          ),
+        },
+      });
+    },
   });
 
   return (
